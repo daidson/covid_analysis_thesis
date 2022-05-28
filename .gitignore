@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Pytest dependencies
+.pytest_cache
+.coverage
+
+# VS Code folders
+.vscode
