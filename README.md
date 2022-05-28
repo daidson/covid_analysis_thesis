@@ -17,15 +17,21 @@ Add a how to use
 * To add a new dependency on poetry, use:
 
 ```
-poetry add [dependency name]
+$poetry add [dependency name]
 ```
 
 * To install the dependencies, use:
 
 ```
-poetry install
+$poetry install
 ```
 
 * For more on the documentation, refer to: https://python-poetry.org/docs/cli/
 
 ### PyTest
+
+* To run the tests and see coverage, use:
+
+```
+$make tests
+```
