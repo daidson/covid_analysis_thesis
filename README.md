@@ -14,6 +14,25 @@ Add a how to use
 
 ### Poetry
 
+* Poetry works as a virtual environment on Python, in which you can use Python libraries without having to install them.
+* To start using poetry on your local repository, you should start with:
+
+```
+$ poetry init
+```
+
+* In order to run poetry's virtual environment, the command needed is:
+
+```
+$ poetry shell
+```
+
+* Top stop your virtual environment's execution, run at anytime:
+
+```
+$ exit
+```
+
 * To add a new dependency on poetry, use:
 
 ```
