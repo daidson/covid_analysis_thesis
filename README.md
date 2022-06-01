@@ -42,7 +42,7 @@ $poetry add [dependency name]
 * To install the dependencies, use:
 
 ```
-$poetry install
+$ poetry install
 ```
 
 * For more on the documentation, refer to: https://python-poetry.org/docs/cli/
@@ -52,5 +52,5 @@ $poetry install
 * To run the tests and see coverage, use:
 
 ```
-$make tests
+$ make tests
 ```
