@@ -6,7 +6,7 @@ import requests
 class DataIngestion():
     """A class to consume data from SUS health system using PySUS"""
 
-    def get_api_data_status(api_url: str) -> int:
+    def get_api_data_status(self, api_url: str) -> int:
         """
         Function to retrieve the status code from a given API
         
@@ -16,7 +16,7 @@ class DataIngestion():
         data_status = requests.get(api_url, verify=True).status_code
         return data_status
 
-    def get_data_from_pysus(api_url: str) -> dict:
+    def get_data_from_pysus(self, api_url: str) -> dict:
         """
         Function to retrieve data from a given API
         
