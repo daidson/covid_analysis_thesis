@@ -9,10 +9,11 @@ from ingestion.ingest import DataIngestion
 from ingestion.ingest_pysus import PysusApiIngestion
 import pandas as pd
 
-mock_state = 'pe'
+from pyspark.sql import SparkSession, DataFrame
+
 
 @pytest.mark.skip(reason="testing dataframe construction")
-def test_api_connection_status():    
+def test_api_connection_status() -> None:    
     dai = DataIngestion()
     test_url = "https://httpbin.org/ip"
     requested_data_status = dai.get_api_data_status(test_url)
@@ -20,7 +21,7 @@ def test_api_connection_status():
     assert requested_data_status == 200
 
 @pytest.mark.skip(reason="testing dataframe construction")
-def test_data_ingestion():
+def test_data_ingestion() -> None:
     dai = DataIngestion()
     test_url = "https://httpbin.org/ip"
     request_data = dai.get_data_from_pysus(test_url)
@@ -30,8 +31,6 @@ def test_data_ingestion():
     
     assert request_data == mock_data
 
-def test_ingest_pysus_data():
-    pai = PysusApiIngestion()
-    requested_dataframe = pai.ingest_covid_data(uf = mock_state)
-    print(requested_dataframe.head())
+def test_ingest_pysus_data() -> None:
+
     assert requested_dataframe is not null
