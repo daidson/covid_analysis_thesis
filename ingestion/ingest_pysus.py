@@ -1,3 +1,4 @@
+from operator import index
 from pyspark.sql import DataFrame
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
@@ -24,12 +25,22 @@ class PysusApiIngestion():
         self.UF = uf.lower()
         es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
         query = {"match_all": {}}
-        index_to_access = os.getenv('DATABASE') + uf
-        results = es.search(query=query, index=index_to_access, request_timeout=60, filter_path=['hits.hits._source'])
+        index_to_access = os.getenv('DATABASE') + self.UF
+        results = es.search(query=query,
+                            size=10000, 
+                            request_timeout=60, 
+                            index=index_to_access, 
+                            filter_path=['hits.hits._source'])
+        final_results = results['hits']['hits']
 
-        return pd.DataFrame.from_dict(results)
+        data = []
+        for result in final_results:
+            data.append(result["_source"])
+
+        return pd.DataFrame.from_dict(data)
     
-    def write_ingested_data(self, transformation_path: str, dataframe: DataFrame, uf: str) -> None:
+    
+    def write_ingested_data(self, dataframe: DataFrame, uf: str) -> None:
         """
         Function to save data in parquet
         """
