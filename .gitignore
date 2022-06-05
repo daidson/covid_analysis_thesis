@@ -137,3 +137,6 @@ dmypy.json
 
 # llvmlite versioning
 0.38.0
+
+# datasets
+ingested_data/
