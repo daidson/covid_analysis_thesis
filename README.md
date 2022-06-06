@@ -15,7 +15,7 @@ Add a how to use
 ### Poetry
 
 * Poetry works as a virtual environment on Python, in which you can use Python libraries without having to install them.
-* To start using poetry on your local repository, you should start with: (ONLY USE THIS IF YOU STILL DON'T HAVE `pyproject.py` locally)
+* To start using poetry on your local repository, you should start with: (ONLY USE THIS IF YOU STILL DON'T HAVE `pyproject.toml` locally)
 
 ```
 $ poetry init
