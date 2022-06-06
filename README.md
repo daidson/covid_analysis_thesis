@@ -15,7 +15,7 @@ Add a how to use
 ### Poetry
 
 * Poetry works as a virtual environment on Python, in which you can use Python libraries without having to install them.
-* To start using poetry on your local repository, you should start with:
+* To start using poetry on your local repository, you should start with: (ONLY USE THIS IF YOU STILL DON'T HAVE `pyproject.py` locally)
 
 ```
 $ poetry init
@@ -36,13 +36,19 @@ $ exit
 * To add a new dependency on poetry, use:
 
 ```
-$poetry add [dependency name]
+$ poetry add [dependency name]
 ```
 
 * To install the dependencies, use:
 
 ```
 $ poetry install
+```
+
+* To remove a desired dependency, use:
+
+```
+$ poetry remove [dependency name]
 ```
 
 * For more on the documentation, refer to: https://python-poetry.org/docs/cli/
