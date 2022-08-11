@@ -1,5 +1,10 @@
+from msilib import schema
+from multiprocessing.dummy import Array
 from operator import index
-from pyspark.sql import DataFrame
+from struct import Struct
+from pyspark import SparkContext
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType, BooleanType, ArrayType
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 import datetime
@@ -11,11 +16,17 @@ from pathlib import Path
 
 load_dotenv(dotenv_path=Path('.env'))
 
+# sc = SparkContext.getOrCreate()
+
+# spark = SparkSession.builder \
+#     .appName("SUS Data Ingestion") \
+#     .master("local") \
+#     .getOrCreate()
 
 class PysusApiIngestion():
     """A class to ingest data from TABNET/DATASUS/SUS using pysus library"""
 
-    def ingest_covid_data(self, uf: str) -> DataFrame:
+    def ingest_covid_data(self, spark: SparkSession, uf: str) -> DataFrame:
         """
         Function to ingest covid data from Tabnet using PySUS
 
@@ -37,14 +48,55 @@ class PysusApiIngestion():
         for result in final_results:
             data.append(result["_source"])
 
-        return pd.DataFrame.from_dict(data)
+        schema = StructType([
+            StructField("resultadoTesteSorologicoIgM", StringType(), True),
+            StructField("@timestamp", StringType(), True),
+            StructField("resultadoTesteSorologicoIgG", StringType(), True),
+            StructField("estadoNotificacaoIBGE", StringType(), True),
+            StructField("dataPrimeiraDose", StringType(), True),
+            StructField("municipio", StringType(), True),
+            StructField("outrasCondicoes", StringType(), True),
+            StructField("sexo", StringType(), True),
+            StructField("codigoBuscaAtivaAssintomatico", StringType(), True),
+            StructField("estado", StringType(), True),
+            StructField("dataInicioSintomas", StringType(), True),
+            StructField("resultadoTesteSorologicoTotais", StringType(), True),
+            StructField("estrangeiro", StringType(), True),
+            StructField("racaCor", StringType(), True),
+            StructField("dataTesteSorologico", StringType(), True),
+            StructField("codigoTriagemPopulacaoEspecifica", StringType(), True),
+            StructField("municipioNotificacaoIBGE", StringType(), True),
+            StructField("codigoRecebeuVacina", StringType(), True),
+            StructField("outroBuscaAtivaAssintomatico", StringType(), True),
+            StructField("evolucaoCaso", StringType(), True),
+            StructField("idade", StringType(), True),
+            StructField("idcodigoLocalRealizacaoTestagemade", StringType(), True),
+            StructField("estadoNotificacao", StringType(), True),
+            StructField("profissionalSeguranca", StringType(), True),
+            StructField("@version", StringType(), True),
+            StructField("resultadoTesteSorologicoIgA", StringType(), True),
+            StructField("tipoTeste", StringType(), True),
+            StructField("dataEncerramento", StringType(), True),
+            StructField("estadoTeste", StringType(), True),
+            StructField("dataSegundaDose", StringType(), True),
+            StructField("estadoIBGE", StringType(), True),
+            StructField("testes", ArrayType(StringType()), True),
+            StructField("municipioNotificacao", StringType(), True),
+            StructField("classificacaoFinal", StringType(), True),
+            StructField("registroAtual", BooleanType(), True),
+            StructField("codigoDosesVacina", ArrayType(StringType()), True)
+        ])
+
+        dataframe = spark.createDataFrame(data=data, schema=schema)
+        
+        return dataframe
     
     
     def write_ingested_data(self, dataframe: DataFrame, uf: str) -> None:
         """
-        Function to save data in parquet
+        Function to save dataframe in parquet
         """
-        input_df = pd.DataFrame(dataframe)
+        input_df = dataframe
         today = datetime.datetime.now()
         dt = today.strftime("%d_%m_%Y_%H_%M_%S")
         output_name = 'esus_data_' + uf + '_' + dt + '.parquet'
@@ -53,7 +105,7 @@ class PysusApiIngestion():
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        input_df.to_parquet(f"{output_dir}/{output_name}")
+        input_df.write.parquet(f"{output_dir}/{output_name}")
 
         return print("Dataframe saved to desired path")
 

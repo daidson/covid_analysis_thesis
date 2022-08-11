@@ -10,6 +10,8 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 
+from tests import SPARK
+
 
 load_dotenv(dotenv_path=Path('.env'))
 
@@ -34,7 +36,7 @@ def test_data_ingestion() -> None:
     print(request_data)
     assert request_data == mock_data
 
-# @pytest.mark.skip(reason="testing consumption")
+@pytest.mark.skip(reason="testing data ingestion with spark")
 def test_env_variables() -> None:
     mock_env_dict = {'USER':'user-public-notificacoes',
                 'DATABASE':'desc-esus-notifica-estado-pe',
@@ -47,15 +49,13 @@ def test_env_variables() -> None:
 # @pytest.mark.skip(reason="testing consumption")
 def test_ingest_pysus_data() -> None:
     pai = PysusApiIngestion()
-    requested_dataframe = pai.ingest_covid_data(uf='pe')
-
-    print(requested_dataframe.head())
+    requested_dataframe = pai.ingest_covid_data(spark=SPARK, uf='pe')
 
     assert requested_dataframe is not null
 
-# @pytest.mark.skip(reason="testing consumption")
+# @pytest.mark.skip(reason="testing data ingestion with spark")
 def test_write_dataframe() -> None:
     pai = PysusApiIngestion()
-    pai.write_ingested_data(uf='pe', dataframe=pai.ingest_covid_data(uf='pe'))
+    pai.write_ingested_data(uf='pe', dataframe=pai.ingest_covid_data(spark=SPARK, uf='pe'))
 
     assert None == None
