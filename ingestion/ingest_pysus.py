@@ -1,12 +1,7 @@
 from msilib import schema
-from multiprocessing.dummy import Array
-from operator import index
-from struct import Struct
-from pyspark import SparkContext
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, BooleanType, ArrayType
+from pyspark.sql.types import StructType, StructField, StringType, BooleanType, ArrayType
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import scan
 import datetime
 
 import os 
@@ -15,13 +10,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 load_dotenv(dotenv_path=Path('.env'))
-
-# sc = SparkContext.getOrCreate()
-
-# spark = SparkSession.builder \
-#     .appName("SUS Data Ingestion") \
-#     .master("local") \
-#     .getOrCreate()
 
 class PysusApiIngestion():
     """A class to ingest data from TABNET/DATASUS/SUS using pysus library"""
