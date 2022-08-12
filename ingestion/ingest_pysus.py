@@ -1,41 +1,24 @@
-from msilib import schema
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType, StructField, StringType, BooleanType, ArrayType
 from elasticsearch import Elasticsearch
 import datetime
 
 import os 
-import pandas as pd
 from dotenv import load_dotenv
 from pathlib import Path
+
+from ingestion import SPARK
 
 load_dotenv(dotenv_path=Path('.env'))
 
 class PysusApiIngestion():
-    """A class to ingest data from TABNET/DATASUS/SUS using pysus library"""
+    """A class to ingest data from TABNET/DATASUS/SUS"""
 
-    def ingest_covid_data(self, spark: SparkSession, uf: str) -> DataFrame:
+    def define_ingestion_schema(self) -> list:
         """
-        Function to ingest covid data from Tabnet using PySUS
-
-        :param uf: brazilian state for ingestion reference
-        :param url: string for connection with elastic-search
+        Function to map Covid Data schema from SUS-Tabnet
+        This function returns a Type argument
         """
-        self.UF = uf.lower()
-        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
-        query = {"match_all": {}}
-        index_to_access = os.getenv('DATABASE') + self.UF
-        results = es.search(query=query,
-                            size=10000, 
-                            request_timeout=60, 
-                            index=index_to_access, 
-                            filter_path=['hits.hits._source'])
-        final_results = results['hits']['hits']
-
-        data = []
-        for result in final_results:
-            data.append(result["_source"])
-
         schema = StructType([
             StructField("resultadoTesteSorologicoIgM", StringType(), True),
             StructField("@timestamp", StringType(), True),
@@ -75,6 +58,34 @@ class PysusApiIngestion():
             StructField("codigoDosesVacina", ArrayType(StringType()), True)
         ])
 
+        return schema
+
+    def ingest_covid_data(self, spark: SPARK, schema: list, uf: str) -> DataFrame:
+        """
+        Function to ingest covid data from SUS-Tabnet using Pyspark
+
+        :param uf: brazilian state for ingestion reference
+        :param url: string for connection with elastic-search
+        """
+        self.UF = uf.lower()
+
+        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
+
+        query = {"match_all": {}}
+
+        index_to_access = os.getenv('DATABASE') + self.UF
+
+        results = es.search(query=query,
+                            size=10000, 
+                            request_timeout=60, 
+                            index=index_to_access, 
+                            filter_path=['hits.hits._source'])
+        final_results = results['hits']['hits']
+
+        data = []
+        for result in final_results:
+            data.append(result["_source"])
+
         dataframe = spark.createDataFrame(data=data, schema=schema)
         
         return dataframe
@@ -93,7 +104,7 @@ class PysusApiIngestion():
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        input_df.write.parquet(f"{output_dir}/{output_name}")
+        input_df.coalesce(10).write.parquet(f"{output_dir}/{output_name}")
 
         return print("Dataframe saved to desired path")
 
