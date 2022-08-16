@@ -76,13 +76,19 @@ class PysusApiIngestion():
 
         index_to_access = os.getenv('DATABASE') + self.UF
 
+        # FOR 10k cases only (small sample), use this
         # results = es.search(query=query,
         #                     size=10000, 
         #                     request_timeout=60, 
         #                     index=index_to_access, 
         #                     filter_path=['hits.hits._source'])
         # final_results = results['hits']['hits']
+        # 
+        # data = []
+        # for result in final_results:
+        #     data.append(result["_source"])
 
+        # FOR >10K cases (big sample), use this
         page = es.search(
             index = index_to_access,
             doc_type= None,
@@ -103,9 +109,7 @@ class PysusApiIngestion():
             for hit in page['hits']['hits']:
                 data.append(hit["_source"])
 
-        # data = []
-        # for result in final_results:
-        #     data.append(result["_source"])
+       
 
         dataframe = spark.createDataFrame(data=data, schema=schema)
         
