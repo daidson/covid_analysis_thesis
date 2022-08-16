@@ -59,6 +59,7 @@ class PysusApiIngestion():
         ])
 
         return schema
+    
 
     def ingest_covid_data(self, spark: SPARK, schema: list, uf: str) -> DataFrame:
         """
@@ -75,16 +76,36 @@ class PysusApiIngestion():
 
         index_to_access = os.getenv('DATABASE') + self.UF
 
-        results = es.search(query=query,
-                            size=10000, 
-                            request_timeout=60, 
-                            index=index_to_access, 
-                            filter_path=['hits.hits._source'])
-        final_results = results['hits']['hits']
+        # results = es.search(query=query,
+        #                     size=10000, 
+        #                     request_timeout=60, 
+        #                     index=index_to_access, 
+        #                     filter_path=['hits.hits._source'])
+        # final_results = results['hits']['hits']
 
+        page = es.search(
+            index = index_to_access,
+            doc_type= None,
+            scroll = '5m',
+            search_type= 'query_then_fetch',
+            size = 10000,
+            query= query
+        )
+        sid = page['_scroll_id']
+        scroll_size = page['hits']['total']["value"]
+        
         data = []
-        for result in final_results:
-            data.append(result["_source"])
+
+        while(scroll_size > 0):
+            page = es.scroll(scroll_id = sid, scroll = '5m')
+            sid = page['_scroll_id']
+            scroll_size = len(page['hits']['hits'])
+            for hit in page['hits']['hits']:
+                data.append(hit["_source"])
+
+        # data = []
+        # for result in final_results:
+        #     data.append(result["_source"])
 
         dataframe = spark.createDataFrame(data=data, schema=schema)
         
@@ -104,7 +125,7 @@ class PysusApiIngestion():
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        input_df.coalesce(10).write.parquet(f"{output_dir}/{output_name}")
+        input_df.write.parquet(f"{output_dir}/{output_name}")
 
         return print("Dataframe saved to desired path")
 

@@ -24,7 +24,7 @@ def test_should_validate_env_variables() -> None:
                 'URL':os.getenv('URL')}
     assert mock_env_dict == env_dict
 
-# @pytest.mark.skip(reason="testing consumption")
+@pytest.mark.skip(reason="testing consumption")
 def test_should_ingest_sus_data() -> None:
     pai = PysusApiIngestion()
     schema = pai.define_ingestion_schema()
