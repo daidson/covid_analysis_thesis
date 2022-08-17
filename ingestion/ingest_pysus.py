@@ -63,10 +63,12 @@ class PysusApiIngestion():
 
     def ingest_covid_data(self, spark: SPARK, schema: list, uf: str) -> DataFrame:
         """
-        Function to ingest covid data from SUS-Tabnet using Pyspark
+        Function to ingest all Covid data from SUS-Tabnet using Pyspark
 
-        :param uf: brazilian state for ingestion reference
-        :param url: string for connection with elastic-search
+        :param spark: Spark configuration session. Please refer to spark docs when building one.
+        :param uf: Brazilian state reference (there are 27 different states)
+        :param url: ESUS Elasticsearch connection string
+        
         """
         self.UF = uf.lower()
 
@@ -76,32 +78,18 @@ class PysusApiIngestion():
 
         index_to_access = os.getenv('DATABASE') + self.UF
 
-        # FOR 10k cases only (small sample), use this
-        # results = es.search(query=query,
-        #                     size=10000, 
-        #                     request_timeout=60, 
-        #                     index=index_to_access, 
-        #                     filter_path=['hits.hits._source'])
-        # final_results = results['hits']['hits']
-        # 
-        # data = []
-        # for result in final_results:
-        #     data.append(result["_source"])
-
-        # FOR >10K cases (big sample), use this
         page = es.search(
             index = index_to_access,
-            doc_type= None,
+            doc_type = None,
             scroll = '5m',
-            search_type= 'query_then_fetch',
+            search_type = 'query_then_fetch',
             size = 10000,
-            query= query
+            query = query
         )
         sid = page['_scroll_id']
         scroll_size = page['hits']['total']["value"]
         
         data = []
-
         while(scroll_size > 0):
             page = es.scroll(scroll_id = sid, scroll = '5m')
             sid = page['_scroll_id']
@@ -109,7 +97,38 @@ class PysusApiIngestion():
             for hit in page['hits']['hits']:
                 data.append(hit["_source"])
 
-       
+        dataframe = spark.createDataFrame(data=data, schema=schema)
+        
+        return dataframe
+        
+
+    def ingest_sample_data(self, spark: SPARK, schema: list, uf: str) -> DataFrame:
+        """
+        Function to ingest a Covid data sample from SUS-Tabnet using Pyspark
+        This function returns only 10 thousand registers from Tabnet
+
+        :param spark: Spark configuration session. Please refer to spark docs when building one.
+        :param uf: Brazilian state reference (there are 27 different states)
+        :param url: ESUS Elasticsearch connection string
+        """
+        self.UF = uf.lower()
+
+        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
+
+        query = {"match_all": {}}
+
+        index_to_access = os.getenv('DATABASE') + self.UF
+
+        results = es.search(query=query,
+                            size=10000, 
+                            request_timeout=60, 
+                            index=index_to_access, 
+                            filter_path=['hits.hits._source'])
+        final_results = results['hits']['hits']
+        
+        data = []
+        for result in final_results:
+            data.append(result["_source"])
 
         dataframe = spark.createDataFrame(data=data, schema=schema)
         

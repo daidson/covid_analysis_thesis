@@ -1,5 +1,4 @@
 import pytest
-import json
 
 from sqlalchemy import null
 from ingestion.ingest_pysus import PysusApiIngestion
@@ -32,10 +31,11 @@ def test_should_ingest_sus_data() -> None:
 
     assert requested_dataframe is not null
 
+@pytest.mark.skip(reason="testing consumption")
 def test_should_maintain_schema() -> None:
     return None
 
-# @pytest.mark.skip(reason="testing data ingestion with spark")
+@pytest.mark.skip(reason="testing data ingestion with spark")
 def test_should_write_dataframe() -> None:
     pai = PysusApiIngestion()
     schema = pai.define_ingestion_schema()
