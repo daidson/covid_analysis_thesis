@@ -11,7 +11,7 @@ from ingestion import SPARK
 
 load_dotenv(dotenv_path=Path('.env'))
 
-class PysusApiIngestion():
+class EsusApiIngestion():
     """A class to ingest data from TABNET/DATASUS/SUS"""
 
     def define_ingestion_schema(self) -> list:
