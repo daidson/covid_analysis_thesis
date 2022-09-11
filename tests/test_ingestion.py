@@ -175,3 +175,4 @@ def test_should_write_dataframe() -> None:
     eai.write_ingested_data(uf='pe', dataframe=eai.ingest_covid_data(spark=SPARK, schema=schema, uf='pe'))
 
     assert None == None
+
