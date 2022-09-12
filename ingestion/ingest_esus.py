@@ -11,7 +11,7 @@ from ingestion import SPARK
 
 load_dotenv(dotenv_path=Path('.env'))
 
-class PysusApiIngestion():
+class EsusApiIngestion():
     """A class to ingest data from TABNET/DATASUS/SUS"""
 
     def define_ingestion_schema(self) -> list:
@@ -72,11 +72,11 @@ class PysusApiIngestion():
         """
         self.UF = uf.lower()
 
-        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
+        es = Elasticsearch([os.getenv('ESUS_URL')], send_get_body_as="POST")
 
         query = {"match_all": {}}
 
-        index_to_access = os.getenv('DATABASE') + self.UF
+        index_to_access = os.getenv('ESUS_DATABASE') + self.UF
 
         page = es.search(
             index = index_to_access,
@@ -113,11 +113,11 @@ class PysusApiIngestion():
         """
         self.UF = uf.lower()
 
-        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
+        es = Elasticsearch([os.getenv('ESUS_URL')], send_get_body_as="POST")
 
         query = {"match_all": {}}
 
-        index_to_access = os.getenv('DATABASE') + self.UF
+        index_to_access = os.getenv('ESUS_DATABASE') + self.UF
 
         results = es.search(query=query,
                             size=10000, 
