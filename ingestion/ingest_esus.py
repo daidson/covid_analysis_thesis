@@ -72,11 +72,11 @@ class EsusApiIngestion():
         """
         self.UF = uf.lower()
 
-        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
+        es = Elasticsearch([os.getenv('ESUS_URL')], send_get_body_as="POST")
 
         query = {"match_all": {}}
 
-        index_to_access = os.getenv('DATABASE') + self.UF
+        index_to_access = os.getenv('ESUS_DATABASE') + self.UF
 
         page = es.search(
             index = index_to_access,
@@ -113,11 +113,11 @@ class EsusApiIngestion():
         """
         self.UF = uf.lower()
 
-        es = Elasticsearch([os.getenv('URL')], send_get_body_as="POST")
+        es = Elasticsearch([os.getenv('ESUS_URL')], send_get_body_as="POST")
 
         query = {"match_all": {}}
 
-        index_to_access = os.getenv('DATABASE') + self.UF
+        index_to_access = os.getenv('ESUS_DATABASE') + self.UF
 
         results = es.search(query=query,
                             size=10000, 
