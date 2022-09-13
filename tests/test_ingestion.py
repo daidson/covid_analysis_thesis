@@ -133,12 +133,16 @@ SAMPLE_DATA_TWO = [
 
 @pytest.mark.skip(reason="testing data ingestion with spark")
 def test_should_validate_env_variables() -> None:
-    mock_env_dict = {'ESUS_USER':'user-public-notificacoes',
+    mock_env_dict = {
+                'ESUS_USER':'user-public-notificacoes',
                 'ESUS_DATABASE':'desc-esus-notifica-estado-pe',
-                'ESUS_URL':'https://user-public-notificacoes:Za4qNXdyQNSa9YaA@elasticsearch-saps.saude.gov.br'}
-    env_dict = {'ESUS_USER':os.getenv('ESUS_USER'),
+                'ESUS_URL':'https://user-public-notificacoes:Za4qNXdyQNSa9YaA@elasticsearch-saps.saude.gov.br'
+                }
+    env_dict = {
+                'ESUS_USER':os.getenv('ESUS_USER'),
                 'ESUS_DATABASE':os.getenv('ESUS_DATABASE') + 'pe',
-                'ESUS_URL':os.getenv('ESUS_URL')}
+                'ESUS_URL':os.getenv('ESUS_URL')
+                }
     assert mock_env_dict == env_dict
 
 @pytest.mark.skip(reason="testing consumption")
@@ -149,18 +153,18 @@ def test_should_ingest_sus_data() -> None:
 
     assert requested_dataframe is not null
 
-@pytest.mark.skip(reason="this test should be useful for the data consumption as well")
+# @pytest.mark.skip(reason="this test should be useful for the data consumption as well")
 def test_should_maintain_schema() -> None:
-    actual_dataframe = SPARK.read.parquet('E:\\dfa-dev\\TCC\\tcc_code\\covid-project\\ingested_data\\esus_data_pe_12_08_2022_00_31_50.parquet')
+    actual_dataframe = SPARK.read.parquet(os.getenv('ACTUAL_DATAFRAME_PATH'))
     actual_columns = set(actual_dataframe.columns)
-    expected_dataframe = SPARK.read.parquet('E:\\dfa-dev\\TCC\\tcc_code\\covid-project\\ingested_data\\sample\\parquet_sample_pe_17_08_2022_23_02_22.parquet')
+    expected_dataframe = SPARK.read.parquet(os.getenv('EXPECTED_DATAFRAME_PATH'))
     expected_columns = set(expected_dataframe.columns)
     
     assert expected_columns == actual_columns
 
-@pytest.mark.skip(reason="this test should be useful for the data consumption as well")
+# @pytest.mark.skip(reason="this test should be useful for the data consumption as well")
 def test_should_maintain_data() -> None:
-    actual_dataframe = SPARK.read.parquet('E:\\dfa-dev\\TCC\\tcc_code\\covid-project\\ingested_data\\esus_data_pe_12_08_2022_00_31_50.parquet')
+    actual_dataframe = SPARK.read.parquet(os.getenv('ACTUAL_DATAFRAME_PATH'))
     expected_dataframe = SPARK.createDataFrame(
         [
             SAMPLE_DATA_ONE,
