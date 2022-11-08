@@ -35,7 +35,7 @@ SCHEMA = StructType([
             StructField("outroBuscaAtivaAssintomatico", StringType(), True),
             StructField("evolucaoCaso", StringType(), True),
             StructField("idade", StringType(), True),
-            StructField("idcodigoLocalRealizacaoTestagemade", StringType(), True),
+            StructField("codigoLocalRealizacaoTestagem", StringType(), True),
             StructField("estadoNotificacao", StringType(), True),
             StructField("profissionalSeguranca", StringType(), True),
             StructField("@version", StringType(), True),
@@ -49,7 +49,24 @@ SCHEMA = StructType([
             StructField("municipioNotificacao", StringType(), True),
             StructField("classificacaoFinal", StringType(), True),
             StructField("registroAtual", BooleanType(), True),
-            StructField("codigoDosesVacina", ArrayType(StringType()), True)
+            StructField("codigoDosesVacina", ArrayType(StringType()), True),
+            StructField("profissionalSaude", StringType(), True),
+            StructField("outrosSintomas", StringType(), True),
+            StructField("sintomas", StringType(), True),
+            StructField("codigoEstrategiaCovid", StringType(), True),
+            StructField("outroTriagemPopulacaoEspecifica", StringType(), True),
+            StructField("dataTeste", StringType(), True),
+            StructField("outroLocalRealizacaoTestagem", StringType(), True),
+            StructField("codigoContemComunidadeTradicional", StringType(), True),
+            StructField("id", StringType(), True),
+            StructField("dataReforcoDose", StringType(), True),
+            StructField("resultadoTeste", StringType(), True),
+            StructField("tipoTesteSorologico", StringType(), True),
+            StructField("idCollection", StringType(), True),
+            StructField("municipioIBGE", StringType(), True),
+            StructField("dataNotificacao", StringType(), True),
+            StructField("cbo", StringType(), True),
+            StructField("condicoes", StringType(), True),
         ])
 
 SAMPLE_DATA_ONE = [
@@ -153,7 +170,7 @@ def test_should_ingest_sus_data() -> None:
 
     assert requested_dataframe is not null
 
-# @pytest.mark.skip(reason="this test should be useful for the data consumption as well")
+@pytest.mark.skip(reason="this test should be useful for the data consumption as well")
 def test_should_maintain_schema() -> None:
     actual_dataframe = SPARK.read.parquet(os.getenv('ACTUAL_DATAFRAME_PATH'))
     actual_columns = set(actual_dataframe.columns)
@@ -162,7 +179,7 @@ def test_should_maintain_schema() -> None:
     
     assert expected_columns == actual_columns
 
-# @pytest.mark.skip(reason="this test should be useful for the data consumption as well")
+@pytest.mark.skip(reason="this test should be useful for the data consumption as well")
 def test_should_maintain_data() -> None:
     actual_dataframe = SPARK.read.parquet(os.getenv('ACTUAL_DATAFRAME_PATH'))
     expected_dataframe = SPARK.createDataFrame(
@@ -179,5 +196,19 @@ def test_should_write_dataframe() -> None:
     eai = EsusApiIngestion()
     schema = eai.define_ingestion_schema()
     eai.write_ingested_data(uf='pe', dataframe=eai.ingest_covid_data(spark=SPARK, schema=schema, uf='pe'))
+
+    assert None == None
+
+@pytest.mark.skip(reason="proof that json can be saved")
+def test_should_write_json_sample() -> None:
+    eai = EsusApiIngestion()
+    eai.write_ingested_json(uf='pe', data=eai.ingest_sample_data_json(uf='pe'))
+
+    assert None == None
+
+# @pytest.mark.skip(reason="use this test to write in json")
+def test_should_write_json() -> None:
+    eai = EsusApiIngestion()
+    eai.write_ingested_json(uf='pe', data=eai.ingest_covid_data_json(uf='pe'))
 
     assert None == None
