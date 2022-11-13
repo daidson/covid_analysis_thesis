@@ -101,6 +101,21 @@ class DataModeling():
         
         
         return dataframe
+        
+    def drop_unused_columns(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to drop unused columns that do not follow GDPR/LGPD standards or are API technical information only.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+        
+        dataframe = dataframe.drop("@version",
+                                    "id",
+                                    "racaCor",
+                                    "idCollection")
+        
+        return dataframe
     
     def categorize_doses_data(self, dataframe: DataFrame) -> DataFrame:
         """
@@ -119,7 +134,7 @@ class DataModeling():
             F.when((dataframe.codigoDosesVacina[0] == "3") |  (dataframe.codigoDosesVacina[1] == "3") | (dataframe.codigoDosesVacina[2] == "3"), "S").otherwise("N"))
         
         dataframe = dataframe.drop(dataframe.codigoDosesVacina)
-        
+
         return dataframe
     
     def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
