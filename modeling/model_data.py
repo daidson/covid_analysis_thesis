@@ -103,14 +103,64 @@ class DataModeling():
         return dataframe
     
     def categorize_symptoms_column(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to categorize symptoms column. It will create 9 new categoric columns based on the values that the sympton column has.
+        This function returns a dataframe type.
 
-        sintomas
+        :param dataframe: Input dataframe to have data changed
+        """
+
+        dataframe = dataframe \
+        .withColumn("SINTOMA_ASSINTOMATICO_PESSOA", 
+            F.when(dataframe.sintomas.contains("Assintomático"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_DOR_CABECA_PESSOA",
+            F.when(dataframe.sintomas.contains("Dor de Cabeça"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_FEBRE_PESSOA",
+            F.when(dataframe.sintomas.contains("Febre"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_DISTURBIOS_GUSTATIVOS_PESSOA",
+            F.when(dataframe.sintomas.contains("Distúrbios gustativos"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_DISTURBIOS_OLFATIVOS_PESSOA",
+            F.when(dataframe.sintomas.contains("Distúrbios olfativos"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_DISPNEIA_PESSOA",
+            F.when(dataframe.sintomas.contains("Dispneia"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_TOSSE_PESSOA",
+            F.when(dataframe.sintomas.contains("Tosse"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_CORIZA_PESSOA",
+            F.when(dataframe.sintomas.contains("Coriza"), "S").otherwise("N")) \
+        .withColumn("SINTOMA_OUTROS_PESSOA",
+            F.when(dataframe.sintomas.contains("Outros"), "S").otherwise("N"))
 
         return dataframe
     
     def categorize_conditions_columns(self, dataframe: DataFrame) -> DataFrame:
-        
-        condicoes
+        """
+        Function to categorize conditions column. It will create 10 new categoric columns based on the values that the conditions column has.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+
+        dataframe = dataframe \
+        .withColumn("CONDICAO_RESPIRATORIA_CRONICA_PESSOA", 
+            F.when(dataframe.condicoes.contains("Doenças respiratórias crônicas descompensadas"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_RENAL_CRONICA_PESSOA",
+            F.when(dataframe.condicoes.contains("Doenças renais crônicas"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_CROMOSSOMICA_OU_IMUNOFRAGILIDADE_PESSOA",
+            F.when(dataframe.condicoes.contains("Portador de doenças cromossômicas"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_CARDIACA_CRONICA_PESSOA",
+            F.when(dataframe.condicoes.contains("Doenças cardíacas crônicas"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_DIABETES_PESSOA",
+            F.when(dataframe.condicoes.contains("Diabetes"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_IMUNOSSUPRESSAO_PESSOA",
+            F.when(dataframe.condicoes.contains("Imunossupresão"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_GESTANTE_PESSOA",
+            F.when(dataframe.condicoes.contains("Gestante"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_PUERPERA_PESSOA",
+            F.when(dataframe.condicoes.contains("Puérpera"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_OBESIDADE_PESSOA",
+            F.when(dataframe.condicoes.contains("Obesidade"), "S").otherwise("N")) \
+        .withColumn("CONDICAO_OUTROS_PESSOA",
+            F.when(dataframe.condicoes.contains("Outros"), "S").otherwise("N"))
 
         return dataframe
     
@@ -175,7 +225,9 @@ class DataModeling():
                                     "@version",
                                     "dataTeste",
                                     "dataTesteSorologico",
-                                    "registroAtual"
+                                    "registroAtual",
+                                    "sintomas",
+                                    "condicoes"
                                     )
         
         return dataframe
