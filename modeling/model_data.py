@@ -280,40 +280,46 @@ class DataModeling():
         return dataframe
     
     def categorize_test_columns(self, dataframe: DataFrame) -> DataFrame:
-        
-        codigoEstadoTeste
-        -> 1 - solicitado | 2 - coletado | 3 - concluído | 4 - não solicitado
-        estadoTeste
-        -> redundante, remover e usar categorizacao do codigoEstadoTeste
-        fabricanteTeste
-        -> manter do jeito que está
-        codigoFabricanteTeste
-        -> redundante, remover e usar fabricanteTeste
-        codigoResultadoTeste
-        -> 1 - reagente | 2 - não reagente/não detectável | 3 - inconclusivo ou indeterminado
-        resultadoTeste
-        -> redundante, remover e usar categorizacao do codigoResultadoTeste
-        codigoTipoTeste
-        -> 1 - RT-PCR | 2 - RT-LAMP | 3 - TESTE RÁPIDO - ANTÍGENO | 4 - TESTE RÁPIDO - ANTICORPO IgM | 5 - TESTE RÁPIDO - ANTICORPO IgG | 
-           6 - TESTE SOROLÓGICO IgA | 7 - TESTE SOROLÓGICO IgM | 8 - TESTE SOROLÓGICO IgG | 9 - ANTICORPOS TOTAIS
-        tipoTeste
-        -> redundante, remover e usar categorizacao do codigoTipoTeste
-        dataColetaTeste
-        loteTeste
-        
+        """
+        Function to categorize test columns. It will create new categoric columns based on the values that the conditions column has.
+        This function returns a dataframe type.
 
-        POR SE TRATAR DO ÚLTIMO TESTE APENAS, COM AS INFORMAÇÕES ACIMA, AS COLUNAS ABAIXO SE TORNAM REDUNDANTES
-        resultadoTesteSorologicoIgA
-        -> tem anticorpo IgA?
-        resultadoTesteSorologicoIgG
-        -> tem anticorpo IgG?
-        resultadoTesteSorologicoIgM
-        -> tem anticorpo IgM?
-        resultadoTesteSorologicoTotais
-        -> drop (no info)
-        tipoTesteSorologico
-        -> realizou quais testes sorológicos? (redundante, remover e usar categorico com IgA, IgG e IgM)
+        :param dataframe: Input dataframe to have data changed
+        """
 
+        dataframe = dataframe \
+        .withColumn("TESTE_ESTADO_SOLICITADO_ESUS", 
+            F.when(dataframe.codigoEstadoTeste == "1", "S").otherwise("N")) \
+        .withColumn("TESTE_ESTADO_COLETADO_ESUS", 
+            F.when(dataframe.codigoEstadoTeste == "2", "S").otherwise("N")) \
+        .withColumn("TESTE_ESTADO_CONCLUIDO_ESUS", 
+            F.when(dataframe.codigoEstadoTeste == "3", "S").otherwise("N")) \
+        .withColumn("TESTE_ESTADO_NAO_SOLICITADO_ESUS", 
+            F.when(dataframe.codigoEstadoTeste == "4", "S").otherwise("N")) \
+        .withColumn("TESTE_RESULTADO_REAGENTE_ESUS", 
+            F.when(dataframe.codigoResultadoTeste == "1", "S").otherwise("N")) \
+        .withColumn("TESTE_RESULTADO_NAO_REAGENTE_ESUS", 
+            F.when(dataframe.codigoResultadoTeste == "2", "S").otherwise("N")) \
+        .withColumn("TESTE_RESULTADO_INCONCLUSIVO_ESUS", 
+            F.when(dataframe.codigoResultadoTeste == "3", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_RTPCR_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "1", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_RTLAMP_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "2", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_RAPIDO_ANTIGENO_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "3", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_RAPIDO_ANTICORPO_IGM_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "4", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_RAPIDO_ANTICORPO_IGG_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "5", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_SOROLOGICO_IGA_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "6", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_SOROLOGICO_IGM_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "7", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_SOROLOGICO_IGG_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "8", "S").otherwise("N")) \
+        .withColumn("TESTE_TIPO_ANTICORPO_TOTAL_ESUS", 
+            F.when(dataframe.codigoTipoTeste == "9", "S").otherwise("N"))
 
         return dataframe
     
@@ -340,7 +346,10 @@ class DataModeling():
                                 .withColumnRenamed("classificacaoFinal", "CLASSIFICACAO_FINAL_ESUS") \
                                 .withColumnRenamed("dataEncerramento", "DATA_ENCERRAMENTO_NOTIFICACAO_ESUS") \
                                 .withColumnRenamed("cbo", "OCUPACAO_PESSOA") \
-                                .withColumnRenamed("idade", "IDADE")
+                                .withColumnRenamed("idade", "IDADE_PESSOA") \
+                                .withColumnRenamed("dataColetaTeste", "TESTE_DATA_COLETA_ESUS") \
+                                .withColumnRenamed("loteTeste", "TESTE_LOTE_ESUS") \
+                                .withColumnRenamed("fabricanteTeste", "TESTE_FABRICANTE_ESUS")
 
         return dataframe
     
@@ -377,9 +386,22 @@ class DataModeling():
                                     "outroLocalRealizacaoTestagem",
                                     "profissionalSeguranca",
                                     "profissionalSaude",
-                                    "sexo"
+                                    "sexo",
+                                    "resultadoTesteSorologicoIgA",
+                                    "resultadoTesteSorologicoIgG",
+                                    "resultadoTesteSorologicoIgM",
+                                    "resultadoTesteSorologicoTotais",
+                                    "tipoTesteSorologico",
+                                    "estadoTeste",
+                                    "fabricanteTeste",
+                                    "resultadoTeste",
+                                    "tipoTeste",
+                                    "codigoEstadoTeste",
+                                    "codigoFabricanteTeste",
+                                    "codigoResultadoTeste",
+                                    "codigoTipoTeste"
                                     )
-        
+
         return dataframe
         
     def drop_unused_columns(self, dataframe: DataFrame) -> DataFrame:
