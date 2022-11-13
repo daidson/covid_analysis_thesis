@@ -102,14 +102,63 @@ class DataModeling():
         
         return dataframe
     
+    def categorize_populational_columns(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to categorize populational columns. It will create 14 new categoric columns based on the values that the populational columns have.
+        The populational columns refer to population, communities and trial as a whole, all related to COVID symptoms.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+
+        outroLocalRealizacaoTestagem
+        profissionalSaude
+        profissionalSeguranca
+        sexo
+
+        dataframe = dataframe \
+        .withColumn("MEMBRO_COMUNIDADE_TRADICIONAL_PESSOA", 
+            F.when(dataframe.codigoContemComunidadeTradicional == "1", "S").otherwise("N")) \
+        .withColumn("TRIAGEM_TRABALHADOR_SERVICOS_ESSENCIAIS_ESUS",
+            F.when(dataframe.codigoTriagemPopulacaoEspecifica.contains("Trabalhadores de serviços essenciais"), "S").otherwise("N")) \
+        .withColumn("TRIAGEM_PROFISSIONAL_SAUDE_ESUS",
+            F.when(dataframe.codigoTriagemPopulacaoEspecifica.contains("Profissionais de saúde"), "S").otherwise("N")) \
+        .withColumn("TRIAGEM_GESTANTE_OU_PUERPERA_ESUS",
+            F.when(dataframe.codigoTriagemPopulacaoEspecifica.contains("Gestantes e puérperas"), "S").otherwise("N")) \
+        .withColumn("TRIAGEM_POVOS_OU_COMUNIDADE_TRADICIONAL_ESUS",
+            F.when(dataframe.codigoTriagemPopulacaoEspecifica.contains("Povos e comunidades tradicionais"), "S").otherwise("N")) \
+        .withColumn("TRIAGEM_OUTROS_ESUS",
+            F.when(dataframe.codigoTriagemPopulacaoEspecifica.contains("Outros"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_SERVICOS_SAUDE_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Serviço de saúde"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_TRABALHO_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Local de trabalho"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_AEROPORTO_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Aeroporto"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_FARMACIA_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Farmácia"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_ESCOLA_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Escola"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_DOMICILIO_OU_COMUNIDADE_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Domicílio"), "S").otherwise("N")) \
+        .withColumn("LOCAL_TESTAGEM_OUTROS_ESUS",
+            F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Outro"), "S").otherwise("N")) \
+        .withColumn("DECLARADO_ESTRANGEIRO_PESSOA", 
+            F.when(dataframe.estrangeiro == "Sim", "S").otherwise("N"))
+
+        return dataframe
+
     def categorize_strategy_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize strategy columns. It will create new categoric columns based on the values that the strategy columns have.
+        Function to categorize strategy columns. It will create 7 new categoric columns based on the values that the strategy columns have.
         The strategy columns refer to strategy as a whole and to search of people without COVID symptoms.
         This function returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
+
+        outroBuscaAtivaAssintomatico
+        outroTriagemPopulacaoEspecifica
 
         dataframe = dataframe \
         .withColumn("ESTRATEGIA_DIAGNOSTICO_ASSISTENCIAL_ESUS", 
@@ -256,7 +305,11 @@ class DataModeling():
                                     "sintomas",
                                     "condicoes",
                                     "codigoEstrategiaCovid",
-                                    "codigoBuscaAtivaAssintomatico"
+                                    "codigoBuscaAtivaAssintomatico",
+                                    "codigoContemComunidadeTradicional",
+                                    "estrangeiro",
+                                    "codigoTriagemPopulacaoEspecifica",
+                                    "codigoLocalRealizacaoTestagem"
                                     )
         
         return dataframe
