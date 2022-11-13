@@ -1,5 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType, StructField, StringType, BooleanType, ArrayType
+import pyspark.sql.functions as F
 import datetime
 
 import os 
@@ -101,9 +102,29 @@ class DataModeling():
         
         return dataframe
     
+    def categorize_doses_data(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to categorize doses data from an individual.
+        It also drops the 'codigoDosesVacina' column as it returns data from all doses an individual might has had.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+        
+        dataframe = dataframe.withColumn("TEM_PRIMEIRA_DOSE", 
+            F.when((dataframe.codigoDosesVacina[0] == "1") |  (dataframe.codigoDosesVacina[1] == "1") | (dataframe.codigoDosesVacina[2] == "1"), "S").otherwise("N")) \
+                            .withColumn("TEM_SEGUNDA_DOSE", 
+            F.when((dataframe.codigoDosesVacina[0] == "2") |  (dataframe.codigoDosesVacina[1] == "2") | (dataframe.codigoDosesVacina[2] == "2"), "S").otherwise("N")) \
+                            .withColumn("TEM_TERCEIRA_DOSE", 
+            F.when((dataframe.codigoDosesVacina[0] == "3") |  (dataframe.codigoDosesVacina[1] == "3") | (dataframe.codigoDosesVacina[2] == "3"), "S").otherwise("N"))
+        
+        dataframe = dataframe.drop(dataframe.codigoDosesVacina)
+        
+        return dataframe
+    
     def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to get data from the last COVID test a person has taken.
+        Function to get data from the last COVID test an individual has taken.
         It also drops the 'testes' column as it returns data from all tests a person has taken.
         This function returns a dataframe type.
 
