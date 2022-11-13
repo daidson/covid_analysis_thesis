@@ -102,6 +102,33 @@ class DataModeling():
         
         return dataframe
     
+    def categorize_strategy_columns(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to categorize strategy columns. It will create new categoric columns based on the values that the strategy columns have.
+        The strategy columns refer to strategy as a whole and to search of people without COVID symptoms.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+
+        dataframe = dataframe \
+        .withColumn("ESTRATEGIA_DIAGNOSTICO_ASSISTENCIAL_ESUS", 
+            F.when(dataframe.codigoEstrategiaCovid.contains("Diagn'ostico assistencial"), "S").otherwise("N")) \
+        .withColumn("ESTRATEGIA_BUSCA_ATIVA_ASSINTOMATICO_ESUS",
+            F.when(dataframe.codigoEstrategiaCovid.contains("Busca ativa de assintomatico"), "S").otherwise("N")) \
+        .withColumn("ESTRATEGIA_TRIAGEM_POPULACAO_ESPECIFICA_ESUS",
+            F.when(dataframe.codigoEstrategiaCovid.contains("Triagem população específica"), "S").otherwise("N")) \
+        .withColumn("BUSCA_MONITORAMENTO_CONTATOS_ESUS",
+            F.when(dataframe.codigoBuscaAtivaAssintomatico.contains("Monitoramento de contatos"), "S").otherwise("N")) \
+        .withColumn("BUSCA_INVESTIGACAO_SURTOS_ESUS",
+            F.when(dataframe.codigoBuscaAtivaAssintomatico.contains("Investigação de surtos"), "S").otherwise("N")) \
+        .withColumn("BUSCA_MONITORAMENTO_VIAJANTES_RISCO_QUARENTENA_ESUS",
+            F.when(dataframe.codigoBuscaAtivaAssintomatico.contains("Monitoramento de viajantes"), "S").otherwise("N")) \
+        .withColumn("BUSCA_OUTROS_ESUS",
+            F.when(dataframe.codigoBuscaAtivaAssintomatico.contains("Outro"), "S").otherwise("N"))
+
+        return dataframe
+    
     def categorize_symptoms_column(self, dataframe: DataFrame) -> DataFrame:
         """
         Function to categorize symptoms column. It will create 9 new categoric columns based on the values that the sympton column has.
@@ -227,7 +254,9 @@ class DataModeling():
                                     "dataTesteSorologico",
                                     "registroAtual",
                                     "sintomas",
-                                    "condicoes"
+                                    "condicoes",
+                                    "codigoEstrategiaCovid",
+                                    "codigoBuscaAtivaAssintomatico"
                                     )
         
         return dataframe
