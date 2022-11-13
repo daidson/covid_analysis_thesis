@@ -101,6 +101,63 @@ class DataModeling():
         
         
         return dataframe
+    
+    def categorize_symptoms_column(self, dataframe: DataFrame) -> DataFrame:
+
+        sintomas
+
+        return dataframe
+    
+    def categorize_conditions_columns(self, dataframe: DataFrame) -> DataFrame:
+        
+        condicoes
+
+        return dataframe
+    
+    def rename_columns(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to drop redundant columns.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+        
+        dataframe = dataframe.withColumnRenamed("@timestamp", "DATA_NOTIFICACAO_ESUS") \
+                                .withColumnRenamed("estadoNotificacao", "ESTADO_NOTIFICACAO_ESUS") \
+                                .withColumnRenamed("municipioNotificacao", "MUNICIPIO_NOTIFICACAO_ESUS") \
+                                .withColumnRenamed("estado", "ESTADO_RESIDENCIA_PESSOA") \
+                                .withColumnRenamed("municipio", "MUNICIPIO_RESIDENCIA_PESSOA") \
+                                .withColumnRenamed("outrosSintomas", "OUTROS_SINTOMAS_PESSOA") \
+                                .withColumnRenamed("dataInicioSintomas", "DATA_INICIO_SINTOMAS_PESSOA") \
+                                .withColumnRenamed("outrasCondicoes", "OUTRAS_CONDICOES_PESSOA") \
+                                .withColumnRenamed("", "") \
+                                .withColumnRenamed("", "") \
+                                .withColumnRenamed("", "") \
+                                .withColumnRenamed("", "") \
+                                .withColumnRenamed("", "") \
+        
+        return dataframe
+    
+    def drop_redundant_columns(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to drop redundant columns.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+        
+        dataframe = dataframe.drop("estadoNotificacaoIBGE",
+                                    "municipioNotificacaoIBGE",
+                                    "estadoIBGE",
+                                    "municipioIBGE",
+                                    "dataNotificacao",
+                                    "codigoRecebeuVacina",
+                                    "codigoDosesVacina",
+                                    "testes",
+
+                                    )
+        
+        return dataframe
         
     def drop_unused_columns(self, dataframe: DataFrame) -> DataFrame:
         """
@@ -133,8 +190,6 @@ class DataModeling():
                             .withColumn("TEM_TERCEIRA_DOSE", 
             F.when((dataframe.codigoDosesVacina[0] == "3") |  (dataframe.codigoDosesVacina[1] == "3") | (dataframe.codigoDosesVacina[2] == "3"), "S").otherwise("N"))
         
-        dataframe = dataframe.drop(dataframe.codigoDosesVacina)
-
         return dataframe
     
     def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
@@ -156,8 +211,6 @@ class DataModeling():
             .withColumn("loteTeste",  dataframe.testes[0].loteTeste) \
             .withColumn("resultadoTeste",  dataframe.testes[0].resultadoTeste) \
             .withColumn("tipoTeste",  dataframe.testes[0].tipoTeste)
-        
-        dataframe = dataframe.drop(dataframe.testes)
         
         return dataframe
     
