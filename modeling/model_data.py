@@ -102,6 +102,47 @@ class DataModeling():
         
         return dataframe
     
+    def categorize_doses_data(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to categorize doses data from an individual.
+        It also drops the 'codigoDosesVacina' column as it returns data from all doses an individual might has had.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+        
+        dataframe = dataframe \
+        .withColumn("TEM_PRIMEIRA_DOSE", 
+            F.when((dataframe.codigoDosesVacina[0] == "1") |  (dataframe.codigoDosesVacina[1] == "1") | (dataframe.codigoDosesVacina[2] == "1"), "S").otherwise("N")) \
+        .withColumn("TEM_SEGUNDA_DOSE", 
+            F.when((dataframe.codigoDosesVacina[0] == "2") |  (dataframe.codigoDosesVacina[1] == "2") | (dataframe.codigoDosesVacina[2] == "2"), "S").otherwise("N")) \
+        .withColumn("TEM_TERCEIRA_DOSE", 
+            F.when((dataframe.codigoDosesVacina[0] == "3") |  (dataframe.codigoDosesVacina[1] == "3") | (dataframe.codigoDosesVacina[2] == "3"), "S").otherwise("N"))
+        
+        return dataframe
+    
+    def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Function to get data from the last COVID test an individual has taken.
+        It also drops the 'testes' column as it returns data from all tests a person has taken.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+        
+        dataframe = dataframe.withColumn("codigoEstadoTeste", dataframe.testes[0].codigoEstadoTeste) \
+            .withColumn("codigoFabricanteTeste",  dataframe.testes[0].codigoFabricanteTeste) \
+            .withColumn("codigoResultadoTeste",  dataframe.testes[0].codigoResultadoTeste) \
+            .withColumn("codigoTipoTeste",  dataframe.testes[0].codigoTipoTeste) \
+            .withColumn("dataColetaTeste",  dataframe.testes[0].dataColetaTeste.iso) \
+            .withColumn("estadoTeste",  dataframe.testes[0].estadoTeste) \
+            .withColumn("fabricanteTeste",  dataframe.testes[0].fabricanteTeste) \
+            .withColumn("loteTeste",  dataframe.testes[0].loteTeste) \
+            .withColumn("resultadoTeste",  dataframe.testes[0].resultadoTeste) \
+            .withColumn("tipoTeste",  dataframe.testes[0].tipoTeste)
+        
+        return dataframe
+    
     def categorize_populational_columns(self, dataframe: DataFrame) -> DataFrame:
         """
         Function to categorize populational columns. It will create 14 new categoric columns based on the values that the populational columns have.
@@ -110,11 +151,6 @@ class DataModeling():
 
         :param dataframe: Input dataframe to have data changed
         """
-
-        outroLocalRealizacaoTestagem
-        profissionalSaude
-        profissionalSeguranca
-        sexo
 
         dataframe = dataframe \
         .withColumn("MEMBRO_COMUNIDADE_TRADICIONAL_PESSOA", 
@@ -144,7 +180,13 @@ class DataModeling():
         .withColumn("LOCAL_TESTAGEM_OUTROS_ESUS",
             F.when(dataframe.codigoLocalRealizacaoTestagem.contains("Outro"), "S").otherwise("N")) \
         .withColumn("DECLARADO_ESTRANGEIRO_PESSOA", 
-            F.when(dataframe.estrangeiro == "Sim", "S").otherwise("N"))
+            F.when(dataframe.estrangeiro == "Sim", "S").otherwise("N")) \
+        .withColumn("DECLARADO_PROFISSIONAL_SAUDE_PESSOA", 
+            F.when(dataframe.profissionalSaude == "Sim", "S").otherwise("N")) \
+        .withColumn("DECLARADO_PROFISSIONAL_SEGURANCA_PESSOA", 
+            F.when(dataframe.profissionalSeguranca == "Sim", "S").otherwise("N")) \
+        .withColumn("SEXO_PESSOA", 
+            F.when(dataframe.sexo == "Feminino", "F").otherwise("M"))
 
         return dataframe
 
@@ -156,9 +198,6 @@ class DataModeling():
 
         :param dataframe: Input dataframe to have data changed
         """
-
-        outroBuscaAtivaAssintomatico
-        outroTriagemPopulacaoEspecifica
 
         dataframe = dataframe \
         .withColumn("ESTRATEGIA_DIAGNOSTICO_ASSISTENCIAL_ESUS", 
@@ -243,15 +282,38 @@ class DataModeling():
     def categorize_test_columns(self, dataframe: DataFrame) -> DataFrame:
         
         codigoEstadoTeste
-        codigoFabricanteTeste
-        codigoResultadoTeste
-        codigoTipoTeste
-        dataColetaTeste
+        -> 1 - solicitado | 2 - coletado | 3 - concluído | 4 - não solicitado
         estadoTeste
+        -> redundante, remover e usar categorizacao do codigoEstadoTeste
         fabricanteTeste
-        loteTeste
+        -> manter do jeito que está
+        codigoFabricanteTeste
+        -> redundante, remover e usar fabricanteTeste
+        codigoResultadoTeste
+        -> 1 - reagente | 2 - não reagente/não detectável | 3 - inconclusivo ou indeterminado
         resultadoTeste
+        -> redundante, remover e usar categorizacao do codigoResultadoTeste
+        codigoTipoTeste
+        -> 1 - RT-PCR | 2 - RT-LAMP | 3 - TESTE RÁPIDO - ANTÍGENO | 4 - TESTE RÁPIDO - ANTICORPO IgM | 5 - TESTE RÁPIDO - ANTICORPO IgG | 
+           6 - TESTE SOROLÓGICO IgA | 7 - TESTE SOROLÓGICO IgM | 8 - TESTE SOROLÓGICO IgG | 9 - ANTICORPOS TOTAIS
         tipoTeste
+        -> redundante, remover e usar categorizacao do codigoTipoTeste
+        dataColetaTeste
+        loteTeste
+        
+
+        POR SE TRATAR DO ÚLTIMO TESTE APENAS, COM AS INFORMAÇÕES ACIMA, AS COLUNAS ABAIXO SE TORNAM REDUNDANTES
+        resultadoTesteSorologicoIgA
+        -> tem anticorpo IgA?
+        resultadoTesteSorologicoIgG
+        -> tem anticorpo IgG?
+        resultadoTesteSorologicoIgM
+        -> tem anticorpo IgM?
+        resultadoTesteSorologicoTotais
+        -> drop (no info)
+        tipoTesteSorologico
+        -> realizou quais testes sorológicos? (redundante, remover e usar categorico com IgA, IgG e IgM)
+
 
         return dataframe
     
@@ -310,6 +372,12 @@ class DataModeling():
                                     "estrangeiro",
                                     "codigoTriagemPopulacaoEspecifica",
                                     "codigoLocalRealizacaoTestagem"
+                                    "outroBuscaAtivaAssintomatico",
+                                    "outroTriagemPopulacaoEspecifica",
+                                    "outroLocalRealizacaoTestagem",
+                                    "profissionalSeguranca",
+                                    "profissionalSaude",
+                                    "sexo"
                                     )
         
         return dataframe
@@ -329,46 +397,6 @@ class DataModeling():
         
         return dataframe
     
-    def categorize_doses_data(self, dataframe: DataFrame) -> DataFrame:
-        """
-        Function to categorize doses data from an individual.
-        It also drops the 'codigoDosesVacina' column as it returns data from all doses an individual might has had.
-        This function returns a dataframe type.
-
-        :param dataframe: Input dataframe to have data changed
-        """
-        
-        dataframe = dataframe.withColumn("TEM_PRIMEIRA_DOSE", 
-            F.when((dataframe.codigoDosesVacina[0] == "1") |  (dataframe.codigoDosesVacina[1] == "1") | (dataframe.codigoDosesVacina[2] == "1"), "S").otherwise("N")) \
-                            .withColumn("TEM_SEGUNDA_DOSE", 
-            F.when((dataframe.codigoDosesVacina[0] == "2") |  (dataframe.codigoDosesVacina[1] == "2") | (dataframe.codigoDosesVacina[2] == "2"), "S").otherwise("N")) \
-                            .withColumn("TEM_TERCEIRA_DOSE", 
-            F.when((dataframe.codigoDosesVacina[0] == "3") |  (dataframe.codigoDosesVacina[1] == "3") | (dataframe.codigoDosesVacina[2] == "3"), "S").otherwise("N"))
-        
-        return dataframe
-    
-    def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
-        """
-        Function to get data from the last COVID test an individual has taken.
-        It also drops the 'testes' column as it returns data from all tests a person has taken.
-        This function returns a dataframe type.
-
-        :param dataframe: Input dataframe to have data changed
-        """
-        
-        dataframe = dataframe.withColumn("codigoEstadoTeste", dataframe.testes[0].codigoEstadoTeste) \
-            .withColumn("codigoFabricanteTeste",  dataframe.testes[0].codigoFabricanteTeste) \
-            .withColumn("codigoResultadoTeste",  dataframe.testes[0].codigoResultadoTeste) \
-            .withColumn("codigoTipoTeste",  dataframe.testes[0].codigoTipoTeste) \
-            .withColumn("dataColetaTeste",  dataframe.testes[0].dataColetaTeste.iso) \
-            .withColumn("estadoTeste",  dataframe.testes[0].estadoTeste) \
-            .withColumn("fabricanteTeste",  dataframe.testes[0].fabricanteTeste) \
-            .withColumn("loteTeste",  dataframe.testes[0].loteTeste) \
-            .withColumn("resultadoTeste",  dataframe.testes[0].resultadoTeste) \
-            .withColumn("tipoTeste",  dataframe.testes[0].tipoTeste)
-        
-        return dataframe
-    
     def read_json_into_dataframe(self, spark: SPARK, path: str) -> DataFrame:
         """
         Function to read json and make it a dataframe using Pyspark.
@@ -380,7 +408,6 @@ class DataModeling():
         dataframe = spark.read.json(path)
         
         return dataframe
-
     
     def write_modeled_dataframe(self, dataframe: DataFrame, uf: str) -> None:
         """
@@ -397,7 +424,6 @@ class DataModeling():
         dataframe.write.parquet(f"{output_dir}/{output_name}")
 
         return print("Dataframe saved to desired path")
-
 
     def __init__(self) -> None:
         """Init method to call class"""
