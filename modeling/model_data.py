@@ -114,6 +114,21 @@ class DataModeling():
 
         return dataframe
     
+    def categorize_test_columns(self, dataframe: DataFrame) -> DataFrame:
+        
+        codigoEstadoTeste
+        codigoFabricanteTeste
+        codigoResultadoTeste
+        codigoTipoTeste
+        dataColetaTeste
+        estadoTeste
+        fabricanteTeste
+        loteTeste
+        resultadoTeste
+        tipoTeste
+
+        return dataframe
+    
     def rename_columns(self, dataframe: DataFrame) -> DataFrame:
         """
         Function to drop redundant columns.
@@ -122,7 +137,7 @@ class DataModeling():
         :param dataframe: Input dataframe to have data changed
         """
         
-        dataframe = dataframe.withColumnRenamed("@timestamp", "DATA_NOTIFICACAO_ESUS") \
+        dataframe = dataframe.withColumnRenamed("@timestamp", "DATA_INICIO_NOTIFICACAO_ESUS") \
                                 .withColumnRenamed("estadoNotificacao", "ESTADO_NOTIFICACAO_ESUS") \
                                 .withColumnRenamed("municipioNotificacao", "MUNICIPIO_NOTIFICACAO_ESUS") \
                                 .withColumnRenamed("estado", "ESTADO_RESIDENCIA_PESSOA") \
@@ -130,12 +145,15 @@ class DataModeling():
                                 .withColumnRenamed("outrosSintomas", "OUTROS_SINTOMAS_PESSOA") \
                                 .withColumnRenamed("dataInicioSintomas", "DATA_INICIO_SINTOMAS_PESSOA") \
                                 .withColumnRenamed("outrasCondicoes", "OUTRAS_CONDICOES_PESSOA") \
-                                .withColumnRenamed("", "") \
-                                .withColumnRenamed("", "") \
-                                .withColumnRenamed("", "") \
-                                .withColumnRenamed("", "") \
-                                .withColumnRenamed("", "") \
-        
+                                .withColumnRenamed("dataPrimeiraDose", "DATA_PRIMEIRA_DOSE_PESSOA") \
+                                .withColumnRenamed("dataSegundaDose", "DATA_SEGUNDA_DOSE_PESSOA") \
+                                .withColumnRenamed("dataReforcoDose", "DATA_TERCEIRA_DOSE_PESSOA") \
+                                .withColumnRenamed("evolucaoCaso", "EVOLUCAO_CASO_PESSOA") \
+                                .withColumnRenamed("classificacaoFinal", "CLASSIFICACAO_FINAL_ESUS") \
+                                .withColumnRenamed("dataEncerramento", "DATA_ENCERRAMENTO_NOTIFICACAO_ESUS") \
+                                .withColumnRenamed("cbo", "OCUPACAO_PESSOA") \
+                                .withColumnRenamed("idade", "IDADE")
+
         return dataframe
     
     def drop_redundant_columns(self, dataframe: DataFrame) -> DataFrame:
@@ -154,7 +172,10 @@ class DataModeling():
                                     "codigoRecebeuVacina",
                                     "codigoDosesVacina",
                                     "testes",
-
+                                    "@version",
+                                    "dataTeste",
+                                    "dataTesteSorologico",
+                                    "registroAtual"
                                     )
         
         return dataframe
