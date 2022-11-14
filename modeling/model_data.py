@@ -104,9 +104,9 @@ class DataModeling():
     
     def categorize_doses_data(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize doses data from an individual.
+        Method to categorize doses data from an individual.
         It also drops the 'codigoDosesVacina' column as it returns data from all doses an individual might has had.
-        This function returns a dataframe type.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -123,9 +123,9 @@ class DataModeling():
     
     def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to get data from the last COVID test an individual has taken.
+        Method to get data from the last COVID test an individual has taken.
         It also drops the 'testes' column as it returns data from all tests a person has taken.
-        This function returns a dataframe type.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -147,7 +147,7 @@ class DataModeling():
         """
         Method to categorize columns related to classification and evolution of cases.
         It will create 13 new categoric columns based on the values that those columns have.
-        This function returns a dataframe type.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -184,9 +184,9 @@ class DataModeling():
 
     def categorize_populational_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize populational columns. It will create 14 new categoric columns based on the values that the populational columns have.
+        Method to categorize populational columns. It will create 14 new categoric columns based on the values that the populational columns have.
         The populational columns refer to population, communities and trial as a whole, all related to COVID symptoms.
-        This function returns a dataframe type.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -231,9 +231,9 @@ class DataModeling():
 
     def categorize_strategy_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize strategy columns. It will create 7 new categoric columns based on the values that the strategy columns have.
+        Method to categorize strategy columns. It will create 7 new categoric columns based on the values that the strategy columns have.
         The strategy columns refer to strategy as a whole and to search of people without COVID symptoms.
-        This function returns a dataframe type.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -258,8 +258,8 @@ class DataModeling():
     
     def categorize_symptoms_column(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize symptoms column. It will create 9 new categoric columns based on the values that the sympton column has.
-        This function returns a dataframe type.
+        Method to categorize symptoms column. It will create 9 new categoric columns based on the values that the sympton column has.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -288,8 +288,8 @@ class DataModeling():
     
     def categorize_conditions_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize conditions column. It will create 10 new categoric columns based on the values that the conditions column has.
-        This function returns a dataframe type.
+        Method to categorize conditions column. It will create 10 new categoric columns based on the values that the conditions column has.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -320,8 +320,8 @@ class DataModeling():
     
     def categorize_test_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to categorize test columns. It will create new categoric columns based on the values that the conditions column has.
-        This function returns a dataframe type.
+        Method to categorize test columns. It will create new categoric columns based on the values that the conditions column has.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -364,8 +364,8 @@ class DataModeling():
     
     def rename_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to drop redundant columns.
-        This function returns a dataframe type.
+        Method to drop redundant columns.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -392,8 +392,8 @@ class DataModeling():
     
     def drop_redundant_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to drop redundant columns.
-        This function returns a dataframe type.
+        Method to drop redundant columns.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -445,8 +445,8 @@ class DataModeling():
         
     def drop_unused_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Function to drop unused columns that do not follow GDPR/LGPD standards or are API technical information only.
-        This function returns a dataframe type.
+        Method to drop unused columns that do not follow GDPR/LGPD standards or are API technical information only.
+        This Method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -460,8 +460,8 @@ class DataModeling():
     
     def read_json_into_dataframe(self, spark: SPARK, path: str) -> DataFrame:
         """
-        Function to read json and make it a dataframe using Pyspark.
-        This function returns a dataframe type.
+        Method to read json and make it a dataframe using Pyspark.
+        This Method returns a dataframe type.
 
         :param spark: Spark configuration session. Please refer to spark docs when building one.
         :param path: Desired Json path to be read.
@@ -472,7 +472,10 @@ class DataModeling():
     
     def write_modeled_dataframe(self, dataframe: DataFrame, uf: str) -> None:
         """
-        Function to save dataframe in parquet
+        Method to save dataframe in parquet
+
+        :param dataframe: Input dataframe that is going to be saved as parquet
+        :param uf: State acronym to be written in folder name
         """
         today = datetime.datetime.now()
         dt = today.strftime("%d_%m_%Y_%H_%M_%S")
