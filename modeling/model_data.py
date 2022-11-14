@@ -112,11 +112,11 @@ class DataModeling():
         """
         
         dataframe = dataframe \
-        .withColumn("TEM_PRIMEIRA_DOSE", 
+        .withColumn("TEM_PRIMEIRA_DOSE_PESSOA", 
             F.when((dataframe.codigoDosesVacina[0] == "1") |  (dataframe.codigoDosesVacina[1] == "1") | (dataframe.codigoDosesVacina[2] == "1"), "S").otherwise("N")) \
-        .withColumn("TEM_SEGUNDA_DOSE", 
+        .withColumn("TEM_SEGUNDA_DOSE_PESSOA", 
             F.when((dataframe.codigoDosesVacina[0] == "2") |  (dataframe.codigoDosesVacina[1] == "2") | (dataframe.codigoDosesVacina[2] == "2"), "S").otherwise("N")) \
-        .withColumn("TEM_TERCEIRA_DOSE", 
+        .withColumn("TEM_TERCEIRA_DOSE_PESSOA", 
             F.when((dataframe.codigoDosesVacina[0] == "3") |  (dataframe.codigoDosesVacina[1] == "3") | (dataframe.codigoDosesVacina[2] == "3"), "S").otherwise("N"))
         
         return dataframe
@@ -143,6 +143,45 @@ class DataModeling():
         
         return dataframe
     
+    def categorize_classification_and_evolution(self, dataframe: DataFrame) -> DataFrame:
+        """
+        Method to categorize columns related to classification and evolution of cases.
+        It will create 13 new categoric columns based on the values that those columns have.
+        This function returns a dataframe type.
+
+        :param dataframe: Input dataframe to have data changed
+        """
+
+        dataframe = dataframe \
+        .withColumn("CLASSIFICACAO_FINAL_CONFIRMACAO_LABORATORIO_ESUS", 
+            F.when(dataframe.classificacaoFinal.contains("Confirmado Laboratorial"), "S").otherwise("N")) \
+        .withColumn("CLASSIFICACAO_FINAL_CONFIRMACAO_CLINICO_EPIDEMIOLOGICO_ESUS", 
+            F.when(dataframe.classificacaoFinal.contains("Confirmado Clínico-Epidemiológico"), "S").otherwise("N")) \
+        .withColumn("CLASSIFICACAO_FINAL_DESCARTADO_ESUS", 
+            F.when(dataframe.classificacaoFinal.contains("Descartado"), "S").otherwise("N")) \
+        .withColumn("CLASSIFICACAO_FINAL_SINDROME_GRIPAL_NAO_ESPECIFICADA_ESUS", 
+            F.when(dataframe.classificacaoFinal.contains("Síndrome Gripal"), "S").otherwise("N")) \
+        .withColumn("CLASSIFICACAO_FINAL_CONFIRMACAO_CLINICO_IMAGEM_ESUS", 
+            F.when(dataframe.classificacaoFinal.contains("Confirmado Clínico-Imagem"), "S").otherwise("N")) \
+        .withColumn("CLASSIFICACAO_FINAL_CONFIRMACAO_CRITERIO_CLINICO_ESUS", 
+            F.when(dataframe.classificacaoFinal.contains("Confirmado por Critério Clínico"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_CANCELADO_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Cancelado"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_IGNORADO_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Ignorado"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_TRATAMENTO_DOMICILIAR_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Em tratamento domiciliar"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_INTERNADO_UTI_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Internado em UTI"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_INTERNADO_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Internado"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_OBITO_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Óbito"), "S").otherwise("N")) \
+        .withColumn("EVOLUCAO_CASO_CURA_ESUS", 
+            F.when(dataframe.evolucaoCaso.contains("Cura"), "S").otherwise("N"))
+
+        return dataframe
+
     def categorize_populational_columns(self, dataframe: DataFrame) -> DataFrame:
         """
         Function to categorize populational columns. It will create 14 new categoric columns based on the values that the populational columns have.
@@ -201,7 +240,7 @@ class DataModeling():
 
         dataframe = dataframe \
         .withColumn("ESTRATEGIA_DIAGNOSTICO_ASSISTENCIAL_ESUS", 
-            F.when(dataframe.codigoEstrategiaCovid.contains("Diagn'ostico assistencial"), "S").otherwise("N")) \
+            F.when(dataframe.codigoEstrategiaCovid.contains("Diagnóstico assistencial"), "S").otherwise("N")) \
         .withColumn("ESTRATEGIA_BUSCA_ATIVA_ASSINTOMATICO_ESUS",
             F.when(dataframe.codigoEstrategiaCovid.contains("Busca ativa de assintomatico"), "S").otherwise("N")) \
         .withColumn("ESTRATEGIA_TRIAGEM_POPULACAO_ESPECIFICA_ESUS",
@@ -342,8 +381,6 @@ class DataModeling():
                                 .withColumnRenamed("dataPrimeiraDose", "DATA_PRIMEIRA_DOSE_PESSOA") \
                                 .withColumnRenamed("dataSegundaDose", "DATA_SEGUNDA_DOSE_PESSOA") \
                                 .withColumnRenamed("dataReforcoDose", "DATA_TERCEIRA_DOSE_PESSOA") \
-                                .withColumnRenamed("evolucaoCaso", "EVOLUCAO_CASO_PESSOA") \
-                                .withColumnRenamed("classificacaoFinal", "CLASSIFICACAO_FINAL_ESUS") \
                                 .withColumnRenamed("dataEncerramento", "DATA_ENCERRAMENTO_NOTIFICACAO_ESUS") \
                                 .withColumnRenamed("cbo", "OCUPACAO_PESSOA") \
                                 .withColumnRenamed("idade", "IDADE_PESSOA") \
@@ -399,7 +436,9 @@ class DataModeling():
                                     "codigoEstadoTeste",
                                     "codigoFabricanteTeste",
                                     "codigoResultadoTeste",
-                                    "codigoTipoTeste"
+                                    "codigoTipoTeste",
+                                    "classificacaoFinal",
+                                    "evolucaoCaso"
                                     )
 
         return dataframe
