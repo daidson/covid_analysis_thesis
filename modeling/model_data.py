@@ -26,7 +26,6 @@ class DataModeling():
         :param dataframe: Input dataframe that is going to be saved
         """
 
-        input_df = dataframe
         today = datetime.datetime.now()
         dt = today.strftime("%d_%m_%Y_%H_%M_%S")
         output_name = 'esus_modeled_data_' + uf + '_' + dt + '.parquet'
@@ -35,7 +34,7 @@ class DataModeling():
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        input_df.write.parquet(f"{output_dir}/{output_name}")
+        dataframe.write.parquet(f"{output_dir}/{output_name}")
 
         return print("Dataframe saved to desired path")
     

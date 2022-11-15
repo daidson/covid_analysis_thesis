@@ -200,11 +200,11 @@ def test_should_maintain_data() -> None:
     )
     assert expected_dataframe.collect() == actual_dataframe.take(2)
 
-@pytest.mark.skip(reason="use this test as a sample writing")
+# @pytest.mark.skip(reason="use this test as a sample writing")
 def test_should_write_dataframe() -> None:
     eai = EsusApiIngestion()
     schema = eai.define_ingestion_schema()
-    eai.write_ingested_data(uf='pe', dataframe=eai.ingest_covid_data(spark=SPARK, schema=schema, uf='pe'))
+    eai.write_ingested_dataframe(uf='pe', dataframe=eai.ingest_covid_dataframe(spark=SPARK, schema=schema, uf='pe'))
 
     assert None == None
 
@@ -215,7 +215,7 @@ def test_should_write_json_sample() -> None:
 
     assert None == None
 
-# @pytest.mark.skip(reason="use this test to write in json")
+@pytest.mark.skip(reason="use this test to write in json")
 def test_should_write_json() -> None:
     eai = EsusApiIngestion()
     eai.write_ingested_json(uf='pe', data=eai.ingest_covid_data_json(uf='pe'))
