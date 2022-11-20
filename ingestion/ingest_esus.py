@@ -124,7 +124,7 @@ class EsusApiIngestion():
         page = es.search(
             index = index_to_access,
             doc_type = None,
-            scroll = '5m',
+            scroll = '25m',
             search_type = 'query_then_fetch',
             size = 10000,
             query = query
@@ -165,7 +165,7 @@ class EsusApiIngestion():
         page = es.search(
             index = index_to_access,
             doc_type = None,
-            scroll = '5m',
+            scroll = '25m',
             search_type = 'query_then_fetch',
             size = 10000,
             query = query,

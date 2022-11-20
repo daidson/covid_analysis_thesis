@@ -18,7 +18,7 @@ class DataModeling():
     Its  methods can be decoupled from their use case and used globally."""
 
     
-    def write_dataframe_to_folder(self, dataframe: DataFrame) -> DataFrame:
+    def write_dataframe_to_folder(self, dataframe: DataFrame, uf: str) -> DataFrame:
         """
         Method to ingest a Covid data sample from SUS-Tabnet using Pyspark
         This function returns only 10 thousand registers from Tabnet
