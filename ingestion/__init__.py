@@ -10,5 +10,6 @@ SPARK = SparkSession.builder.master('local') \
                             .config("spark.sql.execution.arrow.pyspark.enabled", True) \
                             .config("spark.sql.repl.eagerEval.enabled", True) \
                             .config("spark.sql.shuffle.partitions", 1000) \
+                            .config("spark.driver.host", "localhost") \
                             .enableHiveSupport() \
                             .getOrCreate()
