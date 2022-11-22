@@ -134,7 +134,7 @@ class EsusApiIngestion():
         
         data = []
         while(scroll_size > 0):
-            page = es.scroll(scroll_id = sid, scroll = '5m')
+            page = es.scroll(scroll_id = sid, scroll = '10m')
             sid = page['_scroll_id']
             scroll_size = len(page['hits']['hits'])
             for hit in page['hits']['hits']:
@@ -176,7 +176,7 @@ class EsusApiIngestion():
         
         data = []
         while(scroll_size > 0):
-            page = es.scroll(scroll_id = sid, scroll = '5m')
+            page = es.scroll(scroll_id = sid, scroll = '10m')
             sid = page['_scroll_id']
             scroll_size = len(page['hits']['hits'])
             for hit in page['hits']['hits']:

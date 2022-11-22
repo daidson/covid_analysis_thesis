@@ -68,7 +68,23 @@ SCHEMA = StructType([
             StructField("condicoes", StringType(), True),
             StructField("resultadoTesteSorologicoIgM", StringType(), True),
             StructField("@timestamp", StringType(), True),
-            StructField("testes", ArrayType(StringType()), True),
+            StructField("testes", ArrayType(
+                StructType([
+                    StructField("codigoEstadoTeste", StringType(), True),
+                    StructField("estadoTeste", StringType(), True),
+                    StructField("codigoResultadoTeste", StringType(), True),
+                    StructField("fabricanteTeste", StringType(), True),
+                    StructField("codigoTipoTeste", StringType(), True),
+                    StructField("loteTeste", StringType(), True),
+                    StructField("codigoFabricanteTeste", StringType(), True),
+                    StructField("dataColetaTeste", StructType([
+                        StructField("__type", StringType(), True),
+                        StructField("iso", StringType(), True)
+                        ]), True),
+                    StructField("resultadoTeste", StringType(), True),
+                    StructField("tipoTeste", StringType(), True)
+                ])
+            ), True),
             StructField("resultadoTesteSorologicoIgA", StringType(), True),
             StructField("estadoTeste", StringType(), True),
             StructField("estadoNotificacao", StringType(), True),
