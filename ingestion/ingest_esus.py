@@ -17,8 +17,8 @@ class EsusApiIngestion():
 
     def define_ingestion_schema(self) -> list:
         """
-        Function to map Covid Data schema from SUS-Tabnet
-        This function returns a Type argument with a schema list of columns
+        Method to map Covid Data schema from SUS-Tabnet
+        This method returns a StructType argument with a schema list of columns
         """
         schema = StructType([
             StructField("outroTriagemPopulacaoEspecifica", StringType(), True),
@@ -265,7 +265,7 @@ class EsusApiIngestion():
 
     def write_ingested_json(self, data: list, uf: str) -> None:
         """
-        Function to save dataframe in parquet
+        Method to save data in json
         """
         today = datetime.datetime.now()
         dt = today.strftime("%d_%m_%Y_%H_%M_%S")

@@ -18,25 +18,7 @@ class DataModeling():
     Its  methods can be decoupled from their use case and used globally."""
 
     
-    def write_dataframe_to_folder(self, dataframe: DataFrame, uf: str) -> DataFrame:
-        """
-        Method to ingest a Covid data sample from SUS-Tabnet using Pyspark
-        This function returns only 10 thousand registers from Tabnet
-
-        :param dataframe: Input dataframe that is going to be saved
-        """
-
-        today = datetime.datetime.now()
-        dt = today.strftime("%d_%m_%Y_%H_%M_%S")
-        output_name = 'esus_modeled_data_' + uf + '_' + dt + '.parquet'
-        output_dir = 'modeled_data'
-
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
-
-        dataframe.write.parquet(f"{output_dir}/{output_name}")
-
-        return print("Dataframe saved to desired path")
+    
     
     def parse_column_types(self, dataframe: DataFrame) -> DataFrame:
         """
@@ -68,8 +50,7 @@ class DataModeling():
     def categorize_doses_data(self, dataframe: DataFrame) -> DataFrame:
         """
         Method to categorize doses data from an individual.
-        It also drops the 'codigoDosesVacina' column as it returns data from all doses an individual might has had.
-        This Method returns a dataframe type.
+        This method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -87,8 +68,7 @@ class DataModeling():
     def get_last_testing_data(self, dataframe: DataFrame) -> DataFrame:
         """
         Method to get data from the last COVID test an individual has taken.
-        It also drops the 'testes' column as it returns data from all tests a person has taken.
-        This Method returns a dataframe type.
+        This method returns a dataframe type.
 
         :param dataframe: Input dataframe to have data changed
         """
@@ -147,7 +127,7 @@ class DataModeling():
 
     def categorize_populational_columns(self, dataframe: DataFrame) -> DataFrame:
         """
-        Method to categorize populational columns. It will create 14 new categoric columns based on the values that the populational columns have.
+        Method to categorize populational columns. It will create 17 new categoric columns based on the values that the populational columns have.
         The populational columns refer to population, communities and trial as a whole, all related to COVID symptoms.
         This Method returns a dataframe type.
 
@@ -409,11 +389,31 @@ class DataModeling():
                                     )
 
         return dataframe
-        
+    
+    def write_dataframe_to_silver_folder(self, dataframe: DataFrame, uf: str) -> DataFrame:
+        """
+        Method to save
+        This munction returns only 10 thousand registers from Tabnet
+
+        :param dataframe: Input dataframe that is going to be saved
+        """
+
+        today = datetime.datetime.now()
+        dt = today.strftime("%d_%m_%Y_%H_%M_%S")
+        output_name = 'esus_modeled_data_' + uf + '_' + dt + '.parquet'
+        output_dir = 'modeled_data'
+
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
+        dataframe.write.parquet(f"{output_dir}/{output_name}")
+
+        return print("Dataframe saved to desired path")
+
     def read_json_into_dataframe(self, spark: SPARK, path: str) -> DataFrame:
         """
         Method to read json and make it a dataframe using Pyspark.
-        This Method returns a dataframe type.
+        This method returns a dataframe type.
 
         :param spark: Spark configuration session. Please refer to spark docs when building one.
         :param path: Desired Json path to be read.

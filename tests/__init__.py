@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 
 SPARK = SparkSession.builder.master('local') \
-                            .appName("Test Class") \
+                            .appName("Main Class") \
                             .config('spark.submit.deployMode', 'client') \
                             .config('spark.driver.memory','16g') \
                             .config('spark.executor.memory','16g') \
