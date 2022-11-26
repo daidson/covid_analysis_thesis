@@ -14,42 +14,84 @@ from pyspark.sql.types import StructType, StructField, StringType, BooleanType, 
 load_dotenv(dotenv_path=Path('.env'))
 
 SCHEMA = StructType([
+            StructField("outroTriagemPopulacaoEspecifica", StringType(), True),
+            StructField("dataSegundaReforcoDose", StringType(), True),
+            StructField("dataTesteSorologico", StringType(), True),
+            StructField("@version", StringType(), True),
+            StructField("codigoEstrategiaCovid", StringType(), True),
+            StructField("dataNotificacao", StringType(), True),
+            StructField("municipioIBGE", StringType(), True),
+            StructField("outroBuscaAtivaAssintomatico", StringType(), True),
+            StructField("estadoIBGE", StringType(), True),
+            StructField("dataInicioTratamento", StringType(), True),
+            StructField("resultadoTesteSorologicoIgG", StringType(), True),
+            StructField("outroLocalRealizacaoTestagem", StringType(), True),
+            StructField("cbo", StringType(), True),
+            StructField("codigoBuscaAtivaAssintomatico", StringType(), True),
+            StructField("codigoDosesVacina", ArrayType(StringType()), True),
+            StructField("codigoTriagemPopulacaoEspecifica", StringType(), True),
+            StructField("loteSegundaReforcoDose", StringType(), True),
+            StructField("dataEncerramento", StringType(), True),
+            StructField("resultadoTesteSorologicoTotais", StringType(), True),
+            StructField("outroAntiviral", StringType(), True),
+            StructField("dataTeste", StringType(), True),
+            StructField("registroAtual", BooleanType(), True),
+            StructField("codigoQualAntiviral", StringType(), True),
+            StructField("sexo", StringType(), True),
+            StructField("municipioNotificacaoIBGE", StringType(), True),
+            StructField("laboratorioSegundaReforcoDose", StringType(), True),
+            StructField("id", StringType(), True),
+            StructField("tipoTeste", StringType(), True),
+            StructField("estado", StringType(), True),
+            StructField("estrangeiro", StringType(), True),
+            StructField("evolucaoCaso", StringType(), True),
+            StructField("dataPrimeiraDose", StringType(), True),
+            StructField("classificacaoFinal", StringType(), True),
+            StructField("municipio", StringType(), True),
+            StructField("idade", StringType(), True),
+            StructField("municipioNotificacao", StringType(), True),
+            StructField("racaCor", StringType(), True),
+            StructField("tipoTesteSorologico", StringType(), True),
+            StructField("codigoRecebeuVacina", StringType(), True),
+            StructField("qualAntiviral", StringType(), True),
+            StructField("idCollection", StringType(), True),
+            StructField("estadoNotificacaoIBGE", StringType(), True),
+            StructField("dataInicioSintomas", StringType(), True),
+            StructField("codigoContemComunidadeTradicional", StringType(), True),
+            StructField("recebeuAntiviral", StringType(), True),
+            StructField("dataSegundaDose", StringType(), True),
+            StructField("dataReforcoDose", StringType(), True),
+            StructField("outrosSintomas", StringType(), True),
+            StructField("codigoLocalRealizacaoTestagem", StringType(), True),
+            StructField("codigoRecebeuAntiviral", StringType(), True),
+            StructField("sintomas", StringType(), True),
+            StructField("condicoes", StringType(), True),
             StructField("resultadoTesteSorologicoIgM", StringType(), True),
             StructField("@timestamp", StringType(), True),
-            StructField("resultadoTesteSorologicoIgG", StringType(), True),
-            StructField("estadoNotificacaoIBGE", StringType(), True),
-            StructField("dataPrimeiraDose", StringType(), True),
-            StructField("municipio", StringType(), True),
-            StructField("outrasCondicoes", StringType(), True),
-            StructField("sexo", StringType(), True),
-            StructField("codigoBuscaAtivaAssintomatico", StringType(), True),
-            StructField("estado", StringType(), True),
-            StructField("dataInicioSintomas", StringType(), True),
-            StructField("resultadoTesteSorologicoTotais", StringType(), True),
-            StructField("estrangeiro", StringType(), True),
-            StructField("racaCor", StringType(), True),
-            StructField("dataTesteSorologico", StringType(), True),
-            StructField("codigoTriagemPopulacaoEspecifica", StringType(), True),
-            StructField("municipioNotificacaoIBGE", StringType(), True),
-            StructField("codigoRecebeuVacina", StringType(), True),
-            StructField("outroBuscaAtivaAssintomatico", StringType(), True),
-            StructField("evolucaoCaso", StringType(), True),
-            StructField("idade", StringType(), True),
-            StructField("idcodigoLocalRealizacaoTestagemade", StringType(), True),
-            StructField("estadoNotificacao", StringType(), True),
-            StructField("profissionalSeguranca", StringType(), True),
-            StructField("@version", StringType(), True),
+            StructField("testes", ArrayType(
+                StructType([
+                    StructField("codigoEstadoTeste", StringType(), True),
+                    StructField("estadoTeste", StringType(), True),
+                    StructField("codigoResultadoTeste", StringType(), True),
+                    StructField("fabricanteTeste", StringType(), True),
+                    StructField("codigoTipoTeste", StringType(), True),
+                    StructField("loteTeste", StringType(), True),
+                    StructField("codigoFabricanteTeste", StringType(), True),
+                    StructField("dataColetaTeste", StructType([
+                        StructField("__type", StringType(), True),
+                        StructField("iso", StringType(), True)
+                        ]), True),
+                    StructField("resultadoTeste", StringType(), True),
+                    StructField("tipoTeste", StringType(), True)
+                ])
+            ), True),
             StructField("resultadoTesteSorologicoIgA", StringType(), True),
-            StructField("tipoTeste", StringType(), True),
-            StructField("dataEncerramento", StringType(), True),
             StructField("estadoTeste", StringType(), True),
-            StructField("dataSegundaDose", StringType(), True),
-            StructField("estadoIBGE", StringType(), True),
-            StructField("testes", ArrayType(StringType()), True),
-            StructField("municipioNotificacao", StringType(), True),
-            StructField("classificacaoFinal", StringType(), True),
-            StructField("registroAtual", BooleanType(), True),
-            StructField("codigoDosesVacina", ArrayType(StringType()), True)
+            StructField("estadoNotificacao", StringType(), True),
+            StructField("outrasCondicoes", StringType(), True),
+            StructField("resultadoTeste", StringType(), True),
+            StructField("profissionalSaude", StringType(), True),
+            StructField("profissionalSeguranca", StringType(), True),
         ])
 
 SAMPLE_DATA_ONE = [
@@ -153,7 +195,7 @@ def test_should_ingest_sus_data() -> None:
 
     assert requested_dataframe is not null
 
-# @pytest.mark.skip(reason="this test should be useful for the data consumption as well")
+@pytest.mark.skip(reason="this test should be useful for the data consumption as well")
 def test_should_maintain_schema() -> None:
     actual_dataframe = SPARK.read.parquet(os.getenv('ACTUAL_DATAFRAME_PATH'))
     actual_columns = set(actual_dataframe.columns)
@@ -162,7 +204,7 @@ def test_should_maintain_schema() -> None:
     
     assert expected_columns == actual_columns
 
-# @pytest.mark.skip(reason="this test should be useful for the data consumption as well")
+@pytest.mark.skip(reason="this test should be useful for the data consumption as well")
 def test_should_maintain_data() -> None:
     actual_dataframe = SPARK.read.parquet(os.getenv('ACTUAL_DATAFRAME_PATH'))
     expected_dataframe = SPARK.createDataFrame(
@@ -174,10 +216,32 @@ def test_should_maintain_data() -> None:
     )
     assert expected_dataframe.collect() == actual_dataframe.take(2)
 
-@pytest.mark.skip(reason="use this test as a sample writing")
+# @pytest.mark.skip(reason="use this test to write dataframe")
 def test_should_write_dataframe() -> None:
     eai = EsusApiIngestion()
     schema = eai.define_ingestion_schema()
-    eai.write_ingested_data(uf='pe', dataframe=eai.ingest_covid_data(spark=SPARK, schema=schema, uf='pe'))
+    eai.write_ingested_dataframe(uf='pe', dataframe=eai.ingest_covid_dataframe(spark=SPARK, schema=schema, uf='pe'))
+
+    assert None == None
+
+@pytest.mark.skip(reason="use this test to write sample dataframe")
+def test_should_write_sample_dataframe() -> None:
+    eai = EsusApiIngestion()
+    schema = eai.define_ingestion_schema()
+    eai.write_ingested_dataframe(uf='pe', dataframe=eai.ingest_sample_dataframe(spark=SPARK, schema=schema, uf='pe'))
+
+    assert None == None
+
+@pytest.mark.skip(reason="proof that json can be saved")
+def test_should_write_json_sample() -> None:
+    eai = EsusApiIngestion()
+    eai.write_ingested_json(uf='pe', data=eai.ingest_sample_data_json(uf='pe'))
+
+    assert None == None
+
+@pytest.mark.skip(reason="use this test to write in json")
+def test_should_write_json() -> None:
+    eai = EsusApiIngestion()
+    eai.write_ingested_json(uf='pe', data=eai.ingest_covid_data_json(uf='pe'))
 
     assert None == None

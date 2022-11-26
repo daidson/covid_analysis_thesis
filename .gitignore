@@ -140,3 +140,4 @@ dmypy.json
 
 # datasets
 ingested_data/
+modeled_data/
