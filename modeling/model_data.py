@@ -401,7 +401,27 @@ class DataModeling():
         today = datetime.datetime.now()
         dt = today.strftime("%d_%m_%Y_%H_%M_%S")
         output_name = 'esus_modeled_data_' + uf + '_' + dt + '.parquet'
-        output_dir = 'modeled_data'
+        output_dir = 'silver_data'
+
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
+        dataframe.write.parquet(f"{output_dir}/{output_name}")
+
+        return print("Dataframe saved to desired path")
+
+    def write_dataframe_to_gold_folder(self, dataframe: DataFrame, uf: str) -> DataFrame:
+        """
+        Method to save
+        This munction returns only 10 thousand registers from Tabnet
+
+        :param dataframe: Input dataframe that is going to be saved
+        """
+
+        today = datetime.datetime.now()
+        dt = today.strftime("%d_%m_%Y_%H_%M_%S")
+        output_name = 'esus_final_data_' + uf + '_' + dt + '.parquet'
+        output_dir = 'gold_data'
 
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)

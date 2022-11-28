@@ -270,7 +270,7 @@ class EsusApiIngestion():
         today = datetime.datetime.now()
         dt = today.strftime("%d_%m_%Y_%H_%M_%S")
         output_name = 'esus_data_' + uf + '_' + dt + '.json'
-        output_dir = 'ingested_data'
+        output_dir = 'bronze_data'
 
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
